@@ -28,6 +28,7 @@ router.post('/login',  async (req, res) => {
 
     try {
         const user = await Users.findBy({ username })
+        .first()
         if (user && bcrypt.compareSync(password, user.password)) {
             const token = generateToken(user)
             res.status(200).json({
@@ -48,7 +49,6 @@ router.post('/login',  async (req, res) => {
 })
 
 function generateToken(user) {
-    console.log('tokenGen', user)
     const payload = {
         subject: user.id,
         username: user.username,

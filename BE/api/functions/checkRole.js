@@ -1,7 +1,6 @@
 module.exports = function(role) {
     return function(req, res, next) {
       if (req.user) {
-        console.log('string', req.user.role.includes('it'))
         if (req.user.role && req.user.role.includes(role)) {
           next();
         } else {
