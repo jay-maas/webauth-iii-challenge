@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 const Users = require('../models/usersModel.js')
 const secrets = require('../config/secrets.js')
 
+const func = require('../functions')
+
 const router = express.Router()
 
 router.post('/register',  async (req, res) => {
@@ -23,29 +25,34 @@ router.post('/register',  async (req, res) => {
     }
 })
 
-router.post('/login',  async (req, res) => {
-    let { username, password } = req.body
-
+router.post('/login', func.validateUser, (req, res) => {
     try {
-        const user = await Users.findBy({ username })
-        .first()
-        if (user && bcrypt.compareSync(password, user.password)) {
-            const token = generateToken(user)
-            res.status(200).json({
-                message: `Welcome ${user.username}`,
-                token: token
-            })
-        } else {
-            res.status(401).json({
-                message: "Invalid Credentials"
-            })
-        }
+        console.log(req.validUser)
     } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            message: "Error"
-        })
+        console.log("error")
     }
+    // let { username, password } = req.body
+
+    // try {
+    //     const user = await Users.findBy({ username })
+    //     .first()
+    //     if (user && bcrypt.compareSync(password, user.password)) {
+    //         const token = generateToken(user)
+    //         res.status(200).json({
+    //             message: `Welcome ${user.username}`,
+    //             token: token
+    //         })
+    //     } else {
+    //         res.status(401).json({
+    //             message: "Invalid Credentials"
+    //         })
+    //     }
+    // } catch (error) {
+    //     console.log(error)
+    //     res.status(500).json({
+    //         message: "Error"
+    //     })
+    // }
 })
 
 function generateToken(user) {
