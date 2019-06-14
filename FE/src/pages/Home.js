@@ -30,7 +30,7 @@ class Home extends React.Component {
                     </div>
                 }
 
-                {!this.props.loggedIn && <Marketing />}
+                {!this.state.isShowing && !this.props.loggedIn && <Marketing />}
                 {this.props.loggedIn && !this.state.isShowing && <UsersList />}
             </>
         )

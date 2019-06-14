@@ -23,7 +23,7 @@ class RegisterPage extends React.Component {
         console.log(this.state.credentials)
         this.props.register(this.state.credentials)
             .then(() => {
-                this.props.history.push('/home')
+                this.props.history.push('/login')
         })
     }
     render(){
@@ -46,7 +46,7 @@ class RegisterPage extends React.Component {
                     />
                     <input 
                         type="text"
-                        department="department"
+                        name="department"
                         value={this.state.credentials.department}
                         onChange={this.handleChange}
                         placeholder="department"
