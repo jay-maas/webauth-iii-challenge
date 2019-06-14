@@ -1,21 +1,19 @@
 const Users = require('../models/usersModel.js')
 const bcrypt = require('bcryptjs')
-const func = require('../functions')
+const tokenService = require('../functions/tokenService.js')
 
 module.exports = async function validateUser(req, res, next) {
-    console.log('username', req.body.username)
     const username = req.body.username
     const password = req.body.password
-    console.log(username)
     try {
         const user = await Users.findBy({ username })
         .first()
-        console.log(user)
-        console.log(password, user.password)
         if (user && bcrypt.compareSync(password, user.password)) {
-            const token = func.generateToken(user)
+            const token = tokenService(user)
             req.validUser = {
                 username: user.username,
+                id: user.id,
+                department: user.department,
                 token: token
             }
             next()

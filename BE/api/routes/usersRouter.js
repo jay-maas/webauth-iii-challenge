@@ -22,7 +22,6 @@ router.get('/', func.restricted, func.checkRole('admin'), async (req, res) => {
 })
 
 router.get('/departments/:name', func.restricted, func.checkDepartment, async (req, res) => {
-    console.log(req.user)
     const department = req.user.department
     try {
         const users = await Users.findBy({ department })

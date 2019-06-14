@@ -1,72 +1,34 @@
 const express = require('express')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
 
 const Users = require('../models/usersModel.js')
-const secrets = require('../config/secrets.js')
 
 const func = require('../functions')
 
 const router = express.Router()
 
-router.post('/register',  async (req, res) => {
-    let user = req.body
-    const hash = bcrypt.hashSync(user.password, 10)
-    user.password = hash
-
+router.post('/register', func.validateUserData, async (req, res) => {
+    const newUser = req.validInput
+    console.log(newUser)
     try {
-        const newUser = await Users.add(user)
-        res.status(201).json(newUser)
+        const user = await Users.add(newUser)
+        res.status(201).json(user)
     } catch (error) {
-        console.log(error)
+        console.log("error")
+    }
+})
+
+router.post('/login', func.validateUser, async (req, res) => {
+    try {
+        res.status(200).json({
+            message: `Welcome ${req.validUser.username}`,
+            user: req.validUser
+        })
+    } catch (error) {
+        console.log("error")
         res.status(500).json({
             message: "Error"
         })
     }
 })
-
-router.post('/login', func.validateUser, (req, res) => {
-    try {
-        console.log(req.validUser)
-    } catch (error) {
-        console.log("error")
-    }
-    // let { username, password } = req.body
-
-    // try {
-    //     const user = await Users.findBy({ username })
-    //     .first()
-    //     if (user && bcrypt.compareSync(password, user.password)) {
-    //         const token = generateToken(user)
-    //         res.status(200).json({
-    //             message: `Welcome ${user.username}`,
-    //             token: token
-    //         })
-    //     } else {
-    //         res.status(401).json({
-    //             message: "Invalid Credentials"
-    //         })
-    //     }
-    // } catch (error) {
-    //     console.log(error)
-    //     res.status(500).json({
-    //         message: "Error"
-    //     })
-    // }
-})
-
-function generateToken(user) {
-    const payload = {
-        subject: user.id,
-        username: user.username,
-        role: user.role,
-        department: user.department
-    }
-
-    const options = {
-        expiresIn: '1d'
-    }
-    return jwt.sign(payload, secrets.jwtSecret, options)
-}
 
 module.exports = router

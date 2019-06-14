@@ -1,7 +1,6 @@
 module.exports = function(req, res, next) {
     if (req.user && req.params.name) {
     const department = req.params.name
-    console.log('dep', department, req.user.department)
 
     if (req.user.department && req.user.department.toLowerCase() === department) {
         next();

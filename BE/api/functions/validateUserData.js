@@ -1,25 +1,17 @@
-module.exports = async function validateContextId(req, res, next) {
-    const context = await contextsModel.findById(req.params.id)
-    if (context) {
-        req.context = context
-        next()
-    } else {
-        res.status(404).json({
-            error: "Could not find a context by that ID"
-        })
-    }
-}
+const bcrypt = require('bcryptjs')
 
-function validateContext(req, res, next) {
+module.exports = function (req, res, next) {
     if (!isEmpty(req.body)) {
-        if (req.body.name) {
-            req.contextValid = {
-                name: req.body.name
+        if (req.body.username && req.body.password) {
+            req.validInput = {
+                ...req.body
             }
+            req.validInput.password = bcrypt.hashSync(req.validInput.password, 10)
+            console.log("valid input", req.validInput)
             next()
         } else {
             res.status(400).json({
-                errorMessage: 'Missing required name. Please do not submit any other key:values in this post request!'
+                errorMessage: 'Missing required input field. Please do not submit any other key:values in this post request!'
             })
         }
     } else {
